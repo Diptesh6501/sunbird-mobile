@@ -70,6 +70,7 @@ export class ContentDetailsPage {
    * To hold user id
    */
   userId: string = '';
+  demo = true;
 
   /**
    * To hold network status
@@ -322,10 +323,12 @@ export class ContentDetailsPage {
         }
       });
     },
-      error => {
-        if (showRating) {
-          loader.dismiss();
-        }
+      (error: any) => {
+        console.log('Error while fetching content details', error);
+        // if (showRating) {
+        //   loader.dismiss();
+        // }
+        loader.dismiss();
         this.translateAndDisplayMessage('ERROR_CONTENT_NOT_AVAILABLE', true);
       });
   }
@@ -333,8 +336,7 @@ export class ContentDetailsPage {
   extractApiResponse(data) {
     this.content = data.result.contentData;
     this.content.downloadable = data.result.isAvailableLocally;
-    this.isUpdateAvail = data.result.isUpdateAvailable;
-
+    // data.result.isUpdateAvailable = true;
     this.content.contentAccess = data.result.contentAccess ? data.result.contentAccess : [];
 
     this.content.playContent = JSON.stringify(data.result);
@@ -367,6 +369,12 @@ export class ContentDetailsPage {
       case true: {
         console.log("Content locally available. Lets play the content");
         this.content.size = data.result.sizeOnDevice;
+        console.log('isUpdateAvail----', this.isUpdateAvail);
+        if (data.result.isUpdateAvailable && !this.isUpdateAvail) {
+          this.isUpdateAvail = true;
+        } else {
+          this.isUpdateAvail = false;
+        }
         break;
       }
       case false: {
@@ -729,16 +737,12 @@ export class ContentDetailsPage {
       ev: event
     });
     popover.onDidDismiss(data => {
-      if (data === 0) {
-        this.content.downloadable = false;
-        this.translateAndDisplayMessage('MSG_RESOURCE_DELETED', false);
-        this.events.publish('savedResources:update', {
-          update: true
-        });
-      }
-      if (data === 'delete.success') {
-        this.content.downloadable = false;
-      }
+      console.log('Delete data received.....', data);
+      this.zone.run(() => {
+        if (data === 'delete.success') {
+          this.content.downloadable = false;
+        }
+      });
     });
   }
 

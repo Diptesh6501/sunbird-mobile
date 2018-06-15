@@ -97,6 +97,7 @@ export class ContentActionsComponent {
   deleteContent() {
     this.contentService.deleteContent(this.getDeleteRequestBody(), (res: any) => {
       let data = JSON.parse(res);
+      console.log('data....', data);
       if (data.result && data.result.status === 'NOT_FOUND') {
         this.showToaster('Content deleting failed');
       } else {
