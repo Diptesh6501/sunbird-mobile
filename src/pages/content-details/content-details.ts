@@ -648,7 +648,9 @@ export class ContentDetailsPage {
         console.log('download cancel success', data);
         this.isDownloadStarted = false;
         this.downloadProgress = '';
-        this.content.downloadable = false;
+        if (!this.isUpdateAvail) {
+          this.content.downloadable = false;
+        }
       });
     }, (error: any) => {
       this.zone.run(() => {
