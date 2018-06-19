@@ -449,8 +449,12 @@ export class CollectionDetailsPage {
             }
           });
           if (this.queuedIdentifiers.length === 0) {
-            this.showMessage('Unable to fetch content', false);
+            // this.showMessage('Unable to fetch content', false);
           }
+        } else if(data.result && data.result[0].status === 'NOT_FOUND') {
+          this.showLoading = false;
+          this.showChildrenLoader = false;
+          this.childrenData.length = 0;
         }
         console.log('Success: content imported successfully... @@@', data);
         // this.showChildrenLoader = false;
@@ -459,8 +463,8 @@ export class CollectionDetailsPage {
       error => {
         this.zone.run(() => {
           console.log('error while loading content details', error);
-          const message = 'Something went wrong, please check after some time';
-          this.showMessage(message, false);
+          // const message = 'Something went wrong, please check after some time';
+          // this.showMessage(message, false);
           this.showChildrenLoader = false;
         })
       });
